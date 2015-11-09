@@ -35,6 +35,9 @@ class Database:#subject to change
 				url, hash, salt = self.urls[name]
 				out.append("\t".join((name, url, hash, salt)))
 			
+			if not os.path.isdir(os.path.dirname(self.file)):
+				os.mkdir(os.path.dirname(self.file))
+			
 			f = open(self.file, "wb")
 			f.write("\n".join(out))
 			f.close()
