@@ -3,6 +3,7 @@ import random
 
 name="RandIMG"
 description = "A random imgur image link redirector"
+show = True
 
 class Page(PageBase):
 	usage="""<h1>RandIMG</h1>

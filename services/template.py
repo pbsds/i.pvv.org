@@ -6,6 +6,7 @@
 
 name = "This is displayed in /home"
 description = "this aswell"
+show = True
 
 class Page(PageBase):
 	def render_GET(self, request):

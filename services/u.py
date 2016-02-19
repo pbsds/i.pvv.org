@@ -4,6 +4,7 @@ import random, hashlib, os
 
 name="URL Shortener"
 description = "A URL shortening service"
+show = True
 
 class Database:#subject to change
 	file = "services/u/database.dat"

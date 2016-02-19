@@ -1,5 +1,6 @@
 name = "ignored"
 description = "ignored"
+show = True
 
 class Page(PageBase):
 	body_base = """<h1><!--DOMAIN--> services:</h1>
@@ -16,6 +17,7 @@ class Page(PageBase):
 		items = []
 		for i in Services.keys():
 			if i == "home": continue
+			if not Services[i].show: continue
 			n = Services[i].name if hasattr(Services[i], "name") else i
 			d = " - <i>%s</i>" %Services[i].description if hasattr(Services[i], "description") else ""
 			items.append(self.item_base % (i, n, d))
