@@ -162,7 +162,7 @@ class Page(PageBase):
 						return self.MakePage(request, "Please enter a valid shortcut URL. Letters and numbers only")
 				if url.count(".") < 1 and len(url.split(".")[-1]) >= 2:
 					return self.MakePage(request, "Please enter a valid link")
-				if url[:7].lower() <> "http://":
+				if url[:7].lower() <> "http://" or url[:8].lower() <> "https://":
 					url = "http://"+url
 				
 				
