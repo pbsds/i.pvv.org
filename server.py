@@ -1,7 +1,10 @@
 from twisted.web import server, resource, static#, util
 from twisted.internet import reactor#, ssl
 from twisted.web.util import redirectTo as TwistedRedirectTo
-import os, sys, glob, __builtin__, ConfigParser
+import os, sys, glob, __builtin__, ConfigParser, platform
+
+#global:
+PORTS = (80, 443)#(http, https)
 
 class Settings:
 	def __init__(self, config="config.ini"):
@@ -88,8 +91,6 @@ def LoadPlugins():
 
 
 Root = Root()
-#Root.putChild('user', User())
-#Root.putChild('blog', Blog())
 Root.putChild('template',  static.File(os.path.join("template" ,""), "text/plain"))
 
 #is this needed?
@@ -98,9 +99,20 @@ LoadPlugins()
 
 print "Server start!"
 print
-#reactor.listenTCP( 80, server.Site(Root))
-#reactor.listenTCP( 80, server.Site(util.Redirect("https://192.168.0.10")))
-#reactor.listenTCP(443, server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"))
-reactor.listenTCP(800, server.Site(Root))
+plat = platform.uname()[0]
+
+if plat == "Linux":
+	#linux forwards IPv4 connections to "::ffff:<ipv4 address>"
+	reactor.listenTCP(PORTS[0], server.Site(Root), interface="::")
+	#reactor.listenTCP(PORTS[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
+	#reactor.listenTCP(PORTS[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
+#elif plat == "Windows" or plat[-3:] == "BSD":
+else:
+	reactor.listenTCP(PORTS[0], server.Site(Root))
+	reactor.listenTCP(PORTS[0], server.Site(Root), interface="::")
+	#reactor.listenTCP(PORTS[0], server.Site(TwistedRedirectTo("https://i.pvv.org")))
+	#reactor.listenTCP(PORTS[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
+	#reactor.listenTCP(PORTS[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"))
+	#reactor.listenTCP(PORTS[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
 
 reactor.run()
