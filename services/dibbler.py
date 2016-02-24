@@ -20,7 +20,7 @@ class Page(PageBase):
 	
 	Please enter the username you want to view the credit of:<br/>
 	<center>
-		<input name="user" type="text" value="Enter losername here" style="font-size: 150%; margin:0px 10px; margin-bottom:20px; width:40%;" maxlength="30"/><br/>
+		<input name="user" type="text" placeholder="Enter losername here" style="font-size: 150%; margin:0px 10px; margin-bottom:20px; width:40%;" maxlength="30"/><br/>
 		<input type="submit" value="Check" class="button" style="font-size: 150%;"/>
 	</center>
 	<!--todo: captcha?-->
