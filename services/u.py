@@ -26,6 +26,7 @@ class Database:#subject to change
 		#self.Add("kuk", "http://google.com", "shdfkjsdf")
 		
 		reactor.callLater(60*5, self.AutoFlush)
+		reactor.addSystemEventTrigger("before", "shutdown", self.Flush)
 	def AutoFlush(self):
 		reactor.callLater(60*5, self.AutoFlush)
 		self.Flush()
@@ -109,7 +110,7 @@ class Page(PageBase):
 	<input name="action" type="hidden" value="add" />
 	
 	This is a simple service to shorten URLs<br/><br/>
-	<input name="url" type="text" value="Input URL here" style="font-size: 150%; margin:20px 10px; width:100%;" maxlength="200"/><br/>
+	<input name="url" type="text" placeholder="Input URL here" style="font-size: 150%; margin:20px 10px; width:100%;" maxlength="200"/><br/>
 	Will be made available at http://<!--DOMAIN-->/u/<input name="name" type="text" value="<!--NAME-->" maxlength="30"/>
 	<center><input type="submit" value="Create!" class="button" style="font-size: 150%;"/></center>
 	<!--todo: captcha-->
@@ -162,7 +163,7 @@ class Page(PageBase):
 						return self.MakePage(request, "Please enter a valid shortcut URL. Letters and numbers only")
 				if url.count(".") < 1 and len(url.split(".")[-1]) >= 2:
 					return self.MakePage(request, "Please enter a valid link")
-				if url[:7].lower() <> "http://" or url[:8].lower() <> "https://":
+				if not (url[:7].lower() == "http://" or url[:8].lower() == "https://"):
 					url = "http://"+url
 				
 				
