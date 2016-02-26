@@ -3,9 +3,6 @@ from twisted.internet import reactor#, ssl
 from twisted.web.util import redirectTo as TwistedRedirectTo
 import os, sys, glob, __builtin__, ConfigParser, platform
 
-#global:
-PORTS = (80, 443)#(http, https)
-
 class Settings:
 	def __init__(self, config="config.ini"):
 		self.conf = ConfigParser.ConfigParser()
@@ -101,18 +98,20 @@ print "Server start!"
 print
 plat = platform.uname()[0]
 
+ports = map(Settings.conf.getint, ["server"]*2, ("port", "sport"))
+print ports
 if plat == "Linux":
 	#linux forwards IPv4 connections to "::ffff:<ipv4 address>"
-	reactor.listenTCP(PORTS[0], server.Site(Root), interface="::")
-	#reactor.listenTCP(PORTS[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
-	#reactor.listenTCP(PORTS[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
+	reactor.listenTCP(ports[0], server.Site(Root), interface="::")
+	#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
+	#reactor.listenTCP(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
 #elif plat == "Windows" or plat[-3:] == "BSD":
 else:
-	reactor.listenTCP(PORTS[0], server.Site(Root))
-	reactor.listenTCP(PORTS[0], server.Site(Root), interface="::")
-	#reactor.listenTCP(PORTS[0], server.Site(TwistedRedirectTo("https://i.pvv.org")))
-	#reactor.listenTCP(PORTS[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
-	#reactor.listenTCP(PORTS[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"))
-	#reactor.listenTCP(PORTS[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
+	reactor.listenTCP(ports[0], server.Site(Root))
+	reactor.listenTCP(ports[0], server.Site(Root), interface="::")
+	#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")))
+	#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
+	#reactor.listenTCP(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"))
+	#reactor.listenTCP(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
 
 reactor.run()
