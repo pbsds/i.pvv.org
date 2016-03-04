@@ -1,5 +1,5 @@
-from twisted.web import server, resource, static#, util
-from twisted.internet import reactor#, ssl
+from twisted.web import server, resource, static
+from twisted.internet import reactor, ssl
 from twisted.web.util import redirectTo as TwistedRedirectTo
 import os, sys, glob, __builtin__, ConfigParser, platform
 
@@ -99,20 +99,45 @@ print "Server start!"
 print
 plat = platform.uname()[0]
 
+#todo: add this http header:
+#Access-Control-Allow-Origin: *
+#(CORS HTTP)
+
+#IPv6 breaks #breaks request.getClientIP()
+#https://twistedmatrix.com/trac/ticket/7704
+
+#todo: support multible hostnames on ssl:
+#https://stackoverflow.com/questions/12149119/twisted-listenssl-virtualhosts
+#contectfactory idea: read dns names from crt file.
+#bash: openssl x509 -text -noout -in {crt filename}
+
 ports = map(Settings.conf.getint, ["server"]*2, ("port", "sport"))
-print ports
+has_ssl = os.path.exists("server.key") and os.pat.exists("server.crt")
 if plat == "Linux":
 	#linux forwards IPv4 connections to "::ffff:<ipv4 address>"
 	reactor.listenTCP(ports[0], server.Site(Root), interface="::")
-	#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
-	#reactor.listenTCP(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
-#elif plat == "Windows" or plat[-3:] == "BSD":
-else:
+	if has_ssl:
+		#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
+		reactor.listenSSL(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
+else:#elif plat == "Windows" or plat[-3:] == "BSD":
 	reactor.listenTCP(ports[0], server.Site(Root))
-	reactor.listenTCP(ports[0], server.Site(Root), interface="::")
-	#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")))
-	#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
-	#reactor.listenTCP(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"))
-	#reactor.listenTCP(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
+	reactor.listenTCP(ports[0], server.Site(Root), interface="::")#breaks request.getClientIP()
+	if has_ssl:
+		#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")))
+		#reactor.listenTCP(ports[0], server.Site(TwistedRedirectTo("https://i.pvv.org")), interface="::")
+		reactor.listenSSL(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"))
+		reactor.listenSSL(ports[1], server.Site(Root), ssl.DefaultOpenSSLContextFactory("server.key", "server.crt"), interface="::")
 
 reactor.run()
+
+
+
+
+
+
+
+
+
+
+
+

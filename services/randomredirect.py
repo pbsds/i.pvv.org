@@ -36,20 +36,20 @@ class WebClientContextFactory(ClientContextFactory):#accepts all ssl certificate
 def is_valid_url(check):
 	if check[:8] <> "https://" and check[:7] <> "http://":
 		return False
-	elif "." not in check[7:]:
+	elif "." not in check[7:-1]:
 		return False
 	return True
 
 class Page(PageBase):
 	usage="""<h1>Random Redirect</h1>
 <p>
-	This is a simple service to redirect incoming requests to a random URL.<br/>
-	<b>TODO:</b> fill in the rest
+	This is a simple service to redirect incoming requests to a random URL chosen from a list provided by the user.<br/>
+	This can be used to randomize 
 </p>
 """
 	contextFactory = WebClientContextFactory()
 	agent = Agent(reactor, contextFactory)#should i really reuse this?
-	def cbResponse(self, response, request):
+	def agent_callback(self, response, request):
 		#print "Response code:", response.code
 		
 		headers = dict(response.headers.getAllRawHeaders())
@@ -109,18 +109,33 @@ class Page(PageBase):
 		request.setResponseCode(409)#Conflict
 		request.finish()
 	def render_GET(self, request):
-		if 0:
-			d = self.agent.request('GET',
-								   'http://pastebin.com/raw/Tta3FqMd',
-								   Headers({'User-Agent': ['%s TwistedMatrix server' % self.Template.domain]}),
-								   None)
-			d.addCallback(self.cbResponse, request)
-			d.addErrback(self.response_error, request)
-			return NOT_DONE_YET
+		#http://pastebin.com/raw/b856TNaW
+		
+		if "list" in request.args:
+			if is_valid_url(request.args["list"][0]):
+				d = self.agent.request('GET',
+				                       #'http://pastebin.com/raw/Tta3FqMd',
+				                       request.args["list"][0],
+				                       Headers({'User-Agent': ['%s TwistedMatrix server' % self.Template.domain]}),
+				                       None)
+				d.addCallback(self.agent_callback, request)
+				d.addErrback(self.response_error, request)
+				return NOT_DONE_YET
+			else:
+				request.setResponseCode(409)#Conflict
+				return self.Template.MakePage(request, "<>\n\tInvalid address: \"%s\"\n</p>" % request.args["list"][0])
 			
 		return self.Template.MakePage(request, self.usage.replace("<!--DOMAIN-->", self.Template.domain))
+	def render_POST(self, request):
+		if "url" in request.args:
+			url = request.arg["url"][0]
+			
+		else:
+			request.setResponseCode(409)#Conflict
 		
-
+		
+		
+		return "ech"
 
 
 
