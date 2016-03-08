@@ -19,4 +19,5 @@ These are added to `__builtin__` for the services to use:
 Dependencies:
 * [Twisted](https://twistedmatrix.com/)
 * [pyOpenSSL](https://pypi.python.org/pypi/pyOpenSSL)
+* And because of OpenSSL: [service_identity](https://pypi.python.org/pypi/service_identity)
 * [SQLAlchemy](http://www.sqlalchemy.org/)

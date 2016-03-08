@@ -13,7 +13,7 @@ class Page(PageBase):
 	usage="""<h1>Dibbler</h1>
 
 <!--MESSAGE-->
-<form enctype="multipart/form-data" action="/dibbler" method="POST"><p>
+<form enctype="multipart/form-data" action="./dibbler" method="POST"><p>
 	<input name="form" type="hidden" value="<!--FORM-ID-->"/>
 	<input name="action" type="hidden" value="credit" />
 	<input name="type" type="hidden" value="browser" />
