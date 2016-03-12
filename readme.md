@@ -21,3 +21,4 @@ Dependencies:
 * [pyOpenSSL](https://pypi.python.org/pypi/pyOpenSSL)
 * And because of OpenSSL: [service_identity](https://pypi.python.org/pypi/service_identity)
 * [SQLAlchemy](http://www.sqlalchemy.org/)
+* diblertx(wip) plans to use [txpostgres](https://github.com/wulczer/txpostgres) instead
