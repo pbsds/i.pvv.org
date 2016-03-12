@@ -2,11 +2,15 @@ name="Vis"
 description = "For displaying videos on brzeczyszczykiewicz"
 show = False
 
+#http://twistedmatrix.com/documents/8.2.0/conch/howto/conch_client.html
+
 class Page(PageBase):
-	#subv4 = (129, 241, 210, 128)#ipv6?
-	#mask4 = (255, 255, 255, 255)
-	subv4 = (127,0,0, 1)#ipv6?
-	maskv4 = (255, 255, 255, 128)
+	#subv4 = (127, 0, 0, 1)
+	#mask4 = (255, 255, 255, 0)
+	subv4 = map(int, Settings.conf.get("vis", "ipv4_subnet").split("."))
+	maskv4 = map(int, Settings.conf.get("vis", "ipv4_mask").split("."))
+	
+	#todo: ipv6, if i find a way with twisted. hosting on ipv6 on linux breaks ipv4 aswell?
 
 	usage="""<h1>Brzeczyszczykiewicz</h1>
 <p>
@@ -16,7 +20,7 @@ class Page(PageBase):
 
 	denied = """<h1>Brzeczyszczykiewicz</h1>
 <p>
-	You must be on pvv's network to use this service.
+	You must be on pvv's local network to use this service.
 </p>
 """
 	def ValidIP(self, request):
@@ -34,4 +38,4 @@ class Page(PageBase):
 		if not self.ValidIP(request):
 			return self.Template.MakePage(request, self.denied)
 
-		return ""
+		return "Not yet implemented"

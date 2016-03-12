@@ -4,8 +4,14 @@ from twisted.web.util import redirectTo as TwistedRedirectTo
 import os, sys, glob, __builtin__, ConfigParser, platform
 
 class Settings:
-	def __init__(self, config="config.ini"):
+	def __init__(self):
+		if not os.path.isfile("config.ini"):
+			from shutil import copy
+			copy("default-config.ini", "config.ini")
+			del copy#ugly
+		
 		self.conf = ConfigParser.ConfigParser()
+		
 		f = open("config.ini", "r")
 		self.conf.readfp(f)
 		f.close()

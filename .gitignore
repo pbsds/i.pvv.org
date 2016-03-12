@@ -56,5 +56,9 @@ docs/_build/
 # PyBuilder
 target/
 
-# other stuff:
+# project specific:
 *.bak
+config.ini
+ideas.txt
+ssl tests
+services/u/database.dat

@@ -8,7 +8,7 @@ show = False
 class Page(PageBase):
 	usage="""<h1>RandIMG</h1>
 <p>
-	This is a simple service to redirect requests to a random image hosted on <a href="http://imgur.com/">imgur.com</a> within a selection chosen by the user.<br/>
+	This is a simple (deprecated?) service to redirect requests to a random image hosted on <a href="http://imgur.com/">imgur.com</a> within a selection chosen by the user.<br/>
 	I made this to randomize my 4chan mascots on each pageload when using <a href="https://userstyles.org/styles/85301/minmascot-for-4chan">MinMascot for 4chan</a>.<br/>
 </p>
 <h3>Usage:</h3>

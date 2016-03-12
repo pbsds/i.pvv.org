@@ -65,15 +65,15 @@ class Page(PageBase):
 	
 <h2>Usage:</h2>
 <p>
-	Host a raw textfile with all the possible redirection urls you need, and pass a link to this list in a http GET query under the name <i><u>list</u></i>.<br/>
+	Host a raw textfile somewhere with all the possible redirection addresses you want, and pass a link to this list in a http GET request as the parameter <i><u>list</u></i>.<br/>
 	<br/>
 	<b>Example:</b><br/>
-	Make a <a href="http://pastebin.com/b856TNaW">pastebin document</a> a paste link to the <a href="http://pastebin.com/raw/b856TNaW">raw version</a> in the text field down below and submit.
-	You'll recieve a link like this:<br/>
+	Make a <a href="http://pastebin.com/b856TNaW">pastebin document</a> and paste a link to the <a href="http://pastebin.com/raw/b856TNaW">raw version</a> in the text field down below and submit.
+	You'll recieve a link looking like this:<br/>
 	<a href="http://<!--DOMAIN-->/randomredirect?list=http%3A%2F%2Fpastebin%2Ecom%2Fraw%2Fb%38%35%36TNaW">http://<!--DOMAIN-->/randomredirect?list=http%3A%2F%2Fpastebin%2Ecom%2Fraw%2Fb%38%35%36TNaW</a><br/>
 	<br/>
 </p>
-<h2>Make your own link</h2>
+<h2>Make your own link:</h2>
 <p>
 	<!--RETURN-->
 	<form enctype="multipart/form-data" action="./randomredirect" method="POST">
@@ -82,11 +82,9 @@ class Page(PageBase):
 	</form>
 </p>
 """.replace("<!--MAXSIZE-->", "%.2fKB" % (float(RESPONSE_LENGTH_LIMIT)/1024.))
-
-
-
+	
 	encodeReturn="""Your URL:<br/>
-	<center><input name="url" type="text" value="%s" style="font-size: 125%%; margin:0px 10px; margin-bottom:20px; width:90%%;"/></center><br/>"""
+	<center><input name="url" id="output" type="text" value="%s" style="font-size: 125%%; margin:0px 10px; margin-bottom:20px; width:90%%;"/></center><br/>"""
 	
 	contextFactory = WebClientContextFactory()
 	agent = Agent(reactor, contextFactory)#should i really reuse this?
@@ -167,6 +165,11 @@ class Page(PageBase):
 			
 		return self.Template.MakePage(request, self.usage.replace("<!--DOMAIN-->", self.Template.domain).replace("<!--RETURN-->", ""))
 	def render_POST(self, request):
+		
+		
+		#todo: add "#output" at the end of the url to scroll the user down.
+		
+		
 		if "url" in request.args:
 			url = request.args["url"][0]
 			if is_valid_url(url):
