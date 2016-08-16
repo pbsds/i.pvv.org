@@ -9,11 +9,15 @@ show = True
 class Image(PageBase):
 	def __init__(self):
 		self.image = None
+		self.recieved = 0
 		self.requested = []
+		f = open("services/adgangskontrollen/offline.jpg", "rb")
+		self.offline = f.read()
+		f.close()
 	def render_GET(self, request):
-		if not self.image:
-			request.setResponseCode(204)
-			return "none yet"
+		if self.image and time.time() - self.recieved > 60*10:
+			self.image = None
+		
 		request.setHeader("Content-Type", "image/jpeg")
 		
 		self.requested.append(time.time())
@@ -21,9 +25,12 @@ class Image(PageBase):
 			self.requested.pop(0)
 		print time.strftime("[%H:%M:%S]"), "adgangskontrollen/image.jpg requested. (%i times this second)" % len(self.requested)
 		
+		if not self.image:
+			return self.offline
 		return self.image
 	def render_POST(self, request):
 		self.image = request.args["img"][0]
+		self.recieved = time.time()
 		print time.strftime("[%H:%M:%S]"), "adgangskontrollen/image.jpg posted."
 class View(PageBase):#no template
 	def __init__(self):
@@ -38,7 +45,7 @@ View = View()
 class Page(PageBase):
 	index="""<h1>Adgangskontrollen</h1>
 <p>
-	Here is the queue number for adgangskontrollen on Gl&oslash;shaugen
+	Her er k&oslash;nummeret til adgangskontrollen p&aring; Gl&oslash;shaugen. Venter du i k&oslash;? Kom innom PVV da vel! Her har vi kaffe og sofa rett ved adgangskontrollen!
 	<center>
 		<iframe src="/adgangskontrollen/view" width="640" height="360"></iframe> <br/>
 		<a href="/adgangskontrollen/view" style="opacity:0.8;">View full screen</a>
