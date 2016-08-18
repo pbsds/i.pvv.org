@@ -21,9 +21,9 @@ class Image(PageBase):
 		request.setHeader("Content-Type", "image/jpeg")
 		
 		self.requested.append(time.time())
-		while time.time() - self.requested[0] > 5:
+		while time.time() - self.requested[0] > 4.95:
 			self.requested.pop(0)
-		print time.strftime("[%H:%M:%S]"), "adgangskontrollen/image.jpg requested. (%i times the last 5 seconds) meaning about %.1f clients" % (len(self.requested), len(self.requested)/5.0)
+		print time.strftime("[%H:%M:%S]"), "adgangskontrollen/image.jpg requested. (%i times the last 5 seconds)" % len(self.requested)
 		
 		if not self.image:
 			return self.offline
@@ -47,7 +47,9 @@ class Page(PageBase):
 <p>
 	Her er k&oslash;nummeret til adgangskontrollen p&aring; Gl&oslash;shaugen. Venter du i k&oslash;? Kom innom PVV da vel! Her har vi kaffe og sofa rett ved adgangskontrollen! <br/>
 	<center>
-		<iframe src="/adgangskontrollen/view" width="640" height="360"></iframe> <br/>
+		<iframe src="/adgangskontrollen/view" width="640" height="360" style="border: 1px black solid"></iframe><br/>
+		<!--<iframe src="/adgangskontrollen/view" width="880" height="480" style="border: 1px black solid"></iframe><br/>-->
+		Dette bildet oppdateres automatisk. <br/>
 		<a href="/adgangskontrollen/view" style="opacity:0.8;">View full screen</a>
 	</center>
 <p>
