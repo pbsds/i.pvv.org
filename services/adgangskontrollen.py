@@ -15,15 +15,15 @@ class Image(PageBase):
 		self.offline = f.read()
 		f.close()
 	def render_GET(self, request):
-		if self.image and time.time() - self.recieved > 60*10:
+		if self.image and time.time() - self.recieved > 60*2:
 			self.image = None
 		
 		request.setHeader("Content-Type", "image/jpeg")
 		
 		self.requested.append(time.time())
-		while time.time() - self.requested[0] > 1:
+		while time.time() - self.requested[0] > 5:
 			self.requested.pop(0)
-		print time.strftime("[%H:%M:%S]"), "adgangskontrollen/image.jpg requested. (%i times this second)" % len(self.requested)
+		print time.strftime("[%H:%M:%S]"), "adgangskontrollen/image.jpg requested. (%i times the last 5 seconds) meaning about %.1f clients" % (len(self.requested), len(self.requested)/5.0)
 		
 		if not self.image:
 			return self.offline
@@ -32,6 +32,7 @@ class Image(PageBase):
 		self.image = request.args["img"][0]
 		self.recieved = time.time()
 		print time.strftime("[%H:%M:%S]"), "adgangskontrollen/image.jpg posted."
+Image = Image()
 class View(PageBase):#no template
 	def __init__(self):
 		f = open("services/adgangskontrollen/view.html", "r")
@@ -39,13 +40,12 @@ class View(PageBase):#no template
 		f.close()
 	def render(self, request):
 		return self.page
-Image = Image()
 View = View()
 		
 class Page(PageBase):
 	index="""<h1>Adgangskontrollen</h1>
 <p>
-	Her er k&oslash;nummeret til adgangskontrollen p&aring; Gl&oslash;shaugen. Venter du i k&oslash;? Kom innom PVV da vel! Her har vi kaffe og sofa rett ved adgangskontrollen!
+	Her er k&oslash;nummeret til adgangskontrollen p&aring; Gl&oslash;shaugen. Venter du i k&oslash;? Kom innom PVV da vel! Her har vi kaffe og sofa rett ved adgangskontrollen! <br/>
 	<center>
 		<iframe src="/adgangskontrollen/view" width="640" height="360"></iframe> <br/>
 		<a href="/adgangskontrollen/view" style="opacity:0.8;">View full screen</a>
